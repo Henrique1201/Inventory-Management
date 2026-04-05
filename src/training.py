@@ -1,20 +1,44 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
+from envoriment import OlistInventoryEnv
+import pandas as pd
 
-# 1. Instanciar o ambiente com os dados de um produto específico (Classe A)
-# Supondo que 'df_produto_top' é o DataFrame que preparamos com as features
-env = OlistInventoryEnv(df_produto_top)
+# Carregar o dataset (ajuste o caminho se necessário)
+df = pd.read_csv("data/dataset_final.csv")
 
-# 2. Verificar se o ambiente segue os padrões do Gymnasium (Boa prática!)
-check_env(env)
+# Focar no produto com mais vendas para o agente aprender mais rápido
+target_product = 'aca2eb7d00ea1a7b8ebd4e68314663af'
+df_top = df[(df['product_id'] == target_product) & (df['rolling_mean_7'] > 0)].copy()
 
-# 3. Criar o Modelo PPO
-# 'MlpPolicy' significa que usaremos uma rede neural simples (Multi-layer Perceptron)
+print(f"Iniciando treino para o produto {target_product} com {len(df_top)} dias de dados.")
+
+# Inicializar ambiente
+env = OlistInventoryEnv(df_top)
+check_env(env) # Valida se o ambiente está correto
+
+# Configurar o modelo PPO
 model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.0003)
 
-# 4. Treinar o agente! 
-# Ele vai "jogar" o cenário de vendas da Olist 10.000 vezes para aprender
-model.learn(total_timesteps=10000)
+# Treinar por 20.000 passos (o agente verá o histórico várias vezes)
+model.learn(total_timesteps=20000)
 
-# 5. Salvar o cérebro do seu agente
+# Salvar o modelo treinado
 model.save("ppo_olist_stock_manager")
+
+# --- 3. Teste de Performance (Simulação) ---
+obs, _ = env.reset()
+total_rewards = 0
+
+print("\n--- Simulação de Teste ---")
+for i in range(len(df_top)):
+    action, _states = model.predict(obs, deterministic=True)
+    obs, reward, done, truncated, info = env.step(action)
+    total_rewards += reward
+    
+    if i % 50 == 0:
+        print(f"Dia {i}: Ação (Pedir)={action} | Recompensa Acumulada={total_rewards:.2f}")
+    
+    if done:
+        break
+
+print(f"\nRecompensa total acumulada na simulação: {total_rewards:.2f}")
