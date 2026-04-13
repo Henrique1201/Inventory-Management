@@ -4,12 +4,12 @@ Este projeto utiliza Aprendizado por Reforço (Reinforcement Learning) para otim
 
 O modelo é treinado usando dados simulados ou estáticos do e-commerce Olist, aplicando o algoritmo **PPO (Proximal Policy Optimization)** da biblioteca `stable-baselines3`.
 
-## 📦 Contexto
+##  Contexto
 
 O gerenciamento de estoque é um problema clássico de tomada de decisão sequencial. Se muito estoque for comprado, o custo de mantê-lo armazenado sobe. Caso contrário, perde-se oportunidades de venda se a demanda não puder ser atendida. 
 Usar Aprendizado por Reforço permite que um agente autônomo aprenda uma "política de compras" ideal analisando características como demanda passada (lags), médias móveis e sazonalidade.
 
-## ⚙️ A Lógica por Trás
+##  A Lógica por Trás
 
 A modelagem foi feita seguindo o padrão da biblioteca `Gymnasium`:
 
@@ -22,13 +22,13 @@ A modelagem foi feita seguindo o padrão da biblioteca `Gymnasium`:
     - **Falta (Stockout Penalty)**: Penalidade alta aplicada caso a demanda do dia exceda o estoque disponível.
 - **Normalização**: O uso do módulo `VecNormalize` é vital para o treinamento de redes neurais (MLP) no PPO. Ele garante que as observações e o retorno da recompensa escalem entre -1 e 1 (aproximadamente), estabilizando o gradiente.
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 
 - **Treinamento de Agente PPO**: Capacidade de aprender padrões de longo prazo para balancear a estocagem.
 - **Simulador Integrado**: Ao final do treinamento, o `src/training.py` roda uma simulação temporal para atestar a funcionalidade e informar a Recompensa Acumulada.
 - **Exportação do Modelo**: O modelo é nativamente salvo em `ppo_olist_stock_manager.zip` com seu normalizador em `vec_normalize.pkl`.
 
-## 🛠️ Como Baixar e Instalar
+##  Como Baixar e Instalar
 
 1. **Clone o repositório** (ou copie os arquivos para seu ambiente local).
    ```bash
@@ -49,7 +49,7 @@ A modelagem foi feita seguindo o padrão da biblioteca `Gymnasium`:
    ```
    *(Observação: Se for focar em CPU, você pode instalar apenas a versão padrão do PyTorch).*
 
-## ▶️ Como Executar
+##  Como Executar
 
 Para iniciar o treinamento seguido da simulação dos resultados, execute o script central de treinamento:
 
