@@ -58,3 +58,4 @@ python3 src/training.py
 ```
 
 Durante o treinamento, você verá relatórios exibindo métricas como `value_loss` e `fps`. Logo após terminar os passos definidos (`total_timesteps`), ele passará à etapa `--- Simulação de Teste ---`, exibindo a decisão real do agente dia a dia.
+
